@@ -11,18 +11,20 @@ methylation = None
 
 print("Getting Site List")
 for gse_name in gse_list:
-    print(gse_name)
+ 
     gse_methylation = pd.read_csv(F"{in_dir}/{gse_name}_methylation.csv", index_col = 0, usecols=[0])
-    print(gse_methylation)
-    print(gse_methylation.shape)
+
+    # gets first data frame from csv file
     if methylation is None:
         methylation = gse_methylation
-    else:
-        methylation = pd.concat([methylation,gse_methylation], axis = 1, join="outer")
-    print(methylation.shape)
-    print(methylation.index)
-    del gse_methylation
+
+    # get methylation pairs 
+    methylation = pd.concat([methylation,gse_methylation], axis = 1, join="outer")
+
+    del gse_methylation # reduces memory load
     gc.collect()
+
+
 print(methylation.head)
 print("saving")
 methylation.index.to_series().to_csv(output, index = False, header = False)
